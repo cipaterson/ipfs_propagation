@@ -11,9 +11,9 @@ IPFS gateways.
 
 ### Dependencies
 
-Just the packages in requirements.txt
+Install the packages in requirements.txt
 
-If you are using an Infura account, then you must create a .env file with your Project ID and Project Secret. See ```env.example``` for details.
+If you are using an Infura account, then you must create a .env file with your Project ID and Project Secret and the subdomain name for your dedicated gateway. See ```env.example``` for details.
 
 ### Installing
 
