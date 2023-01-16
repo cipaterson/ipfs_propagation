@@ -13,6 +13,8 @@ IPFS gateways.
 
 Just the packages in requirements.txt
 
+If you are using an Infura account, then you must create a .env file with your Project ID and Project Secret. See ```env.example``` for details.
+
 ### Installing
 
 ```python
@@ -25,17 +27,17 @@ pip -r requirements.txt
 
 Upload one file (to Infura by default) and time it's propagation to several IPFS gateways:
 ```
-ipfs_prop.py -c1
+./ipfs_prop.py -c1
 ```
 Upload many files to local IPFS node and time propagation:
 ```
-ipfs_prop.py http://localhost:5001
+./ipfs_prop.py http://localhost:5001
 ```
 
 ## Help
 
 ```
-ipfs_prop.py --help
+./ipfs_prop.py --help
 ```
 
 ## Authors

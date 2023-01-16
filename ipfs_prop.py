@@ -19,19 +19,24 @@ def addFile(endpoint):
   files = { 'test': (endpoint+" "+str(time.time())) }
 
   ### ADD FILE TO IPFS AND SAVE THE HASH ###
-  response = requests.post(endpoint + '/api/v0/add',
-    files=files,
-    auth=(projectId, projectSecret),
-    params={'pin':'false'}
-  )
-  if (response.status_code == 200):
-    hash = response.text.split(",")[1].split(":")[1].replace('"','')
-    print(f'{time.asctime()}: {endpoint} uploaded file: Hash: {hash}')
+  try:
+    response = requests.post(endpoint + '/api/v0/add',
+      files=files,
+      auth=(projectId, projectSecret),
+      params={'pin':'false'}
+    )
+  except requests.exceptions.ConnectionError as err:
+    print(f'{time.asctime()}: {endpoint}: ConnectionError')
+    return(0)
   else:
-    hash = 0
-    print(f'{time.asctime()}: {endpoint} uploading file: Error: {response.status_code}')
+    if (response.status_code == 200):
+      hash = response.text.split(",")[1].split(":")[1].replace('"','')
+      print(f'{time.asctime()}: {endpoint} uploaded file: Hash: {hash}')
+    else:
+      hash = 0
+      print(f'{time.asctime()}: {endpoint} uploading file: Error: {response.status_code}')
 
-  return(hash)
+    return(hash)
 
 ###########################################
 def gatewayFile(gateway, hash, timeoutSeconds):
@@ -42,18 +47,22 @@ def gatewayFile(gateway, hash, timeoutSeconds):
     if (gateway == '127.0.0.1'):
       url = f'http://{gateway}:8080/ipfs/{hash}'
     
-    response = requests.get(url)
-
-    if (response.status_code == 200):
-      source, timestamp = response.text.split()
-      prop_delay = time.time()-float(timestamp)
-      print(f'{time.asctime()}: {source} -> {gateway}: {prop_delay:.3f} Seconds')
+    try:
+      response = requests.get(url)
+    except requests.exceptions.ConnectionError as err:
+      print(f'{time.asctime()}: {gateway}: ConnectionError')
       break
     else:
-      ##print(f'{time.asctime()}: {gateway}: Error: {response.status_code}')
-      if (time.time() > startTimeSeconds+timeoutSeconds):
-        print(f'{time.asctime()}: {gateway}: Timeout error after: {int(time.time()-startTimeSeconds)} Sec')
+      if (response.status_code == 200):
+        source, timestamp = response.text.split()
+        prop_delay = time.time()-float(timestamp)
+        print(f'{time.asctime()}: {source} -> {gateway}: {prop_delay:.3f} Seconds')
         break
+      else:
+        ##print(f'{time.asctime()}: {gateway}: Error: {response.status_code}')
+        if (time.time() > startTimeSeconds+timeoutSeconds):
+          print(f'{time.asctime()}: {gateway}: Timeout error after: {int(time.time()-startTimeSeconds)} Sec')
+          break
 
 
 ###########################################
