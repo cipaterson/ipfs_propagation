@@ -75,6 +75,7 @@ def main():
     'dweb.link',
     ##'ipfs.eternum.io',
     'gateway.pinata.cloud',
+    'nftstorage.link',
     ##'ipfs.jpu.jp',
   ]
   parser = argparse.ArgumentParser(description='Test how long a file takes to propagate across the IPFS network.')
